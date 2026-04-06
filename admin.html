@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel Admin — Etiquetas y Envases SAC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E4E2DA;
+    --border-strong: #C8C5BB;
+    --text: #1A1916;
+    --text-2: #6B6860;
+    --text-3: #A8A59E;
+    --accent: #2D5016;
+    --accent-light: #EAF0E2;
+    --amber: #8C5C00;
+    --amber-light: #FFF3D6;
+    --red: #8C1F1F;
+    --red-light: #FDEAEA;
+    --blue: #1A3D6B;
+    --blue-light: #E6EEF8;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 380px;
+    box-shadow: var(--shadow);
+  }
+
+  .login-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .login-title { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .login-sub { font-size: 13px; color: var(--text-2); margin-bottom: 2rem; }
+
+  label { font-size: 12px; color: var(--text-2); display: block; margin-bottom: 6px; font-weight: 500; letter-spacing: 0.3px; }
+
+  input[type="text"], input[type="password"], input[type="number"], select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--border-strong); }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: #1f3a10; border-color: #1f3a10; }
+  .btn-danger { background: var(--red-light); color: var(--red); border-color: #f0c0c0; }
+  .btn-danger:hover { background: #fad5d5; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  .error-msg { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
+
+  /* LAYOUT */
+  #app { display: none; min-height: 100vh; }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    padding: 0 8px;
+  }
+
+  .sidebar-logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 13px;
+  }
+
+  .sidebar-logo-text { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .sidebar-logo-sub { font-size: 11px; color: var(--text-3); }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item:hover { background: var(--bg); color: var(--text); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+  .nav-logout {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+
+  .main {
+    margin-left: 220px;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HEADER */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .page-title { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+  .page-sub { font-size: 13px; color: var(--text-2); }
+
+  /* METRICS */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .metric-label { font-size: 11px; color: var(--text-3); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .metric-value { font-size: 26px; font-weight: 500; line-height: 1; }
+  .metric-sub { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+  /* FILTERS */
+  .filters-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .filter-pill:hover { border-color: var(--border-strong); color: var(--text); }
+  .filter-pill.active { background: var(--accent-light); color: var(--accent); border-color: #b5cfa0; }
+
+  .search-input {
+    margin-left: auto;
+    width: 220px !important;
+  }
+
+  /* TABLE */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFAF8; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-pendiente { background: var(--amber-light); color: var(--amber); }
+  .badge-atendido { background: var(--accent-light); color: var(--accent); }
+  .badge-cerrado { background: #F0EFE9; color: var(--text-2); }
+  .badge-proceso { background: var(--blue-light); color: var(--blue); }
+  .badge-listo { background: var(--accent-light); color: var(--accent); }
+  .badge-entregado { background: #F0EFE9; color: var(--text-2); }
+  .badge-critico { background: var(--red-light); color: var(--red); }
+  .badge-bajo { background: var(--amber-light); color: var(--amber); }
+  .badge-ok { background: var(--accent-light); color: var(--accent); }
+
+  .estado-select {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    width: auto !important;
+    border-radius: 20px !important;
+  }
+
+  .nota-input {
+    font-size: 12px !important;
+    padding: 5px 8px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-3);
+    font-size: 13px;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+    width: 440px;
+    max-width: 95vw;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  }
+  .modal-title { font-size: 16px; font-weight: 500; margin-bottom: 1.5rem; }
+  .form-row { margin-bottom: 1rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.5rem; }
+
+  /* INVENTARIO CARDS */
+  .inv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 1rem;
+  }
+
+  .inv-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: border-color 0.15s;
+  }
+  .inv-card:hover { border-color: var(--border-strong); }
+  .inv-card.stock-critico { border-left: 3px solid var(--red); }
+  .inv-card.stock-bajo { border-left: 3px solid var(--amber); }
+  .inv-card.stock-ok { border-left: 3px solid var(--accent); }
+
+  .inv-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+  .inv-card-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+  .inv-card-cat { font-size: 11px; color: var(--text-3); }
+  .inv-card-stock { font-size: 28px; font-weight: 500; line-height: 1; }
+  .inv-card-unit { font-size: 12px; color: var(--text-3); }
+  .inv-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .inv-card-min { font-size: 11px; color: var(--text-3); }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn { padding: 6px 10px; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; }
+  .view-btn.active { background: var(--bg); border-color: var(--border-strong); }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; background: var(--bg); color: var(--text-2); border: 1px solid var(--border); }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">E&E</div>
+    <div class="login-title">Panel de administración</div>
+    <div class="login-sub">Etiquetas y Envases SAC · Lima, Perú</div>
+    <div class="form-row">
+      <label>Contraseña</label>
+      <input type="password" id="pass-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryLogin()" />
+    </div>
+    <button class="btn btn-primary" style="width:100%; margin-top:4px;" onclick="tryLogin()">Ingresar</button>
+    <div class="error-msg" id="login-error">Contraseña incorrecta. Intenta de nuevo.</div>
+    <p style="font-size:11px; color:var(--text-3); margin-top:16px;">Demo: contraseña <strong>admin123</strong></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">E&E</div>
+      <div>
+        <div class="sidebar-logo-text">Etiquetas y Envases</div>
+        <div class="sidebar-logo-sub">Panel Admin</div>
+      </div>
+    </div>
+
+    <button class="nav-item active" onclick="showPage('consultas', this)">
+      <span class="nav-icon">📋</span> Consultas
+    </button>
+    <button class="nav-item" onclick="showPage('inventario', this)">
+      <span class="nav-icon">📦</span> Inventario
+    </button>
+    <button class="nav-item" onclick="showPage('produccion', this)">
+      <span class="nav-icon">⚙️</span> Producción
+    </button>
+
+    <div class="nav-logout">
+      <button class="nav-item" onclick="logout()" style="color:var(--red);">
+        <span class="nav-icon">↩</span> Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- CONSULTAS -->
+    <div class="page active" id="page-consultas">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Consultas de clientes</div>
+          <div class="page-sub">Gestiona y da seguimiento a todas las cotizaciones recibidas</div>
+        </div>
+        <button class="btn" onclick="exportarCSV()">↓ Exportar CSV</button>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Total</div><div class="metric-value" id="m-total">0</div><div class="metric-sub">consultas</div></div>
+        <div class="metric-card"><div class="metric-label">Pendientes</div><div class="metric-value" id="m-pend" style="color:var(--amber)">0</div><div class="metric-sub">por atender</div></div>
+        <div class="metric-card"><div class="metric-label">Atendidos</div><div class="metric-value" id="m-atend" style="color:var(--accent)">0</div><div class="metric-sub">en curso</div></div>
+        <div class="metric-card"><div class="metric-label">Esta semana</div><div class="metric-value" id="m-semana">0</div><div class="metric-sub">nuevas</div></div>
+      </div>
+
+      <div class="filters-row">
+        <button class="filter-pill active" onclick="setFiltroC('todos',this)">Todos</button>
+        <button class="filter-pill" onclick="setFiltroC('Pendiente',this)">Pendientes</button>
+        <button class="filter-pill" onclick="setFiltroC('Atendido',this)">Atendidos</button>
+        <button class="filter-pill" onclick="setFiltroC('Cerrado',this)">Cerrados</button>
+        <input type="text" class="search-input" id="buscar-c" placeholder="Buscar cliente o producto..." oninput="renderConsultas()" />
+      </div>
+
+      <div class="table-card">
+        <table>
+          <colgroup>
+            <col style="width:50px">
+            <col style="width:90px">
+            <col style="width:140px">
+            <col style="width:160px">
+            <col style="width:80px">
+            <col style="width:120px">
+            <col style="width:200px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>#</th><th>Fecha</th><th>Nombre / Empresa</th><th>Servicio</th><th>Teléfono</th><th>Estado</th><th>Notas</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-consultas"></tbody>
+        </table>
+        <div class="empty-state" id="empty-c" style="display:none">No hay consultas para mostrar</div>
+      </div>
+    </div>
+
+    <!-- INVENTARIO -->
+    <div class="page" id="page-inventario">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Inventario de materiales</div>
+          <div class="page-sub">Control de stock de insumos y materiales</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="view-toggle">
+            <button class="view-btn active" id="btn-cards" onclick="setViewInv('cards')">▦</button>
+            <button class="view-btn" id="btn-list" onclick="setViewInv('list')">☰</button>
+          </div>
+          <button class="btn btn-primary" onclick="abrirModalInv()">+ Agregar material</button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Materiales</div><div class="metric-value" id="inv-total">0</div></div>
+        <div class="metric-card"><div class="metric-label">Stock crítico</div><div class="metric-value" id="inv-critico" style="color:var(--red)">0</div></div>
+        <div class="metric-card"><div class="metric-label">Stock bajo</div><div class="metric-value" id="inv-bajo" style="color:var(--amber)">0</div></div>
+        <div class="metric-card"><div class="metric-label">En buen nivel</div><div class="metric-value" id="inv-ok" style="color:var(--accent)">0</div></div>
+      </div>
+
+      <div class="filters-row">
+        <button class="filter-pill active" onclick="setFiltroInv('todos',this)">Todos</button>
+        <button class="filter-pill" onclick="setFiltroInv('Papeles',this)">Papeles</button>
+        <button class="filter-pill" onclick="setFiltroInv('Tintas',this)">Tintas</button>
+        <button class="filter-pill" onclick="setFiltroInv('Adhesivos',this)">Adhesivos</button>
+        <button class="filter-pill" onclick="setFiltroInv('Envases',this)">Envases</button>
+        <input type="text" class="search-input" id="buscar-inv" placeholder="Buscar material..." oninput="renderInventario()" />
+      </div>
+
+      <div id="inv-cards-view" class="inv-grid"></div>
+
+      <div id="inv-list-view" class="table-card" style="display:none;">
+        <table>
+          <colgroup>
+            <col style="width:180px"><col style="width:100px"><col style="width:80px"><col style="width:80px"><col style="width:80px"><col style="width:100px"><col style="width:120px">
+          </colgroup>
+          <thead>
+            <tr><th>Material</th><th>Categoría</th><th>Stock</th><th>Unidad</th><th>Mínimo</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="tbody-inv"></tbody>
+        </table>
+        <div class="empty-state" id="empty-inv" style="display:none">Sin materiales registrados</div>
+      </div>
+    </div>
+
+    <!-- PRODUCCION -->
+    <div class="page" id="page-produccion">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Órdenes de producción</div>
+          <div class="page-sub">Seguimiento de trabajos en proceso</div>
+        </div>
+        <button class="btn btn-primary" onclick="abrirModalProd()">+ Nueva orden</button>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Total órdenes</div><div class="metric-value" id="p-total">0</div></div>
+        <div class="metric-card"><div class="metric-label">En proceso</div><div class="metric-value" id="p-proceso" style="color:var(--blue)">0</div></div>
+        <div class="metric-card"><div class="metric-label">Listos</div><div class="metric-value" id="p-listo" style="color:var(--accent)">0</div></div>
+        <div class="metric-card"><div class="metric-label">Entregados</div><div class="metric-value" id="p-entregado">0</div></div>
+      </div>
+
+      <div class="filters-row">
+        <button class="filter-pill active" onclick="setFiltroProd('todos',this)">Todos</button>
+        <button class="filter-pill" onclick="setFiltroProd('En proceso',this)">En proceso</button>
+        <button class="filter-pill" onclick="setFiltroProd('Listo',this)">Listos</button>
+        <button class="filter-pill" onclick="setFiltroProd('Entregado',this)">Entregados</button>
+        <input type="text" class="search-input" id="buscar-p" placeholder="Buscar orden o cliente..." oninput="renderProduccion()" />
+      </div>
+
+      <div class="table-card">
+        <table>
+          <colgroup>
+            <col style="width:70px"><col style="width:100px"><col style="width:150px"><col style="width:150px"><col style="width:80px"><col style="width:90px"><col style="width:110px"><col style="width:120px">
+          </colgroup>
+          <thead>
+            <tr><th>Orden</th><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Entrega</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="tbody-prod"></tbody>
+        </table>
+        <div class="empty-state" id="empty-p" style="display:none">No hay órdenes registradas</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL INVENTARIO -->
+<div class="modal-overlay" id="modal-inv" style="display:none;" onclick="if(event.target===this)cerrarModalInv()">
+  <div class="modal">
+    <div class="modal-title" id="modal-inv-title">Agregar material</div>
+    <div class="form-row">
+      <label>Nombre del material</label>
+      <input type="text" id="inv-nombre" placeholder="Ej: Papel couché 90gr" />
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="inv-cat">
+          <option>Papeles</option>
+          <option>Tintas</option>
+          <option>Adhesivos</option>
+          <option>Envases</option>
+          <option>Otros</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Unidad</label>
+        <select id="inv-unidad">
+          <option>kg</option>
+          <option>litros</option>
+          <option>rollos</option>
+          <option>unidades</option>
+          <option>metros</option>
+          <option>resmas</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Stock actual</label>
+        <input type="number" id="inv-stock" placeholder="0" min="0" />
+      </div>
+      <div class="form-row">
+        <label>Stock mínimo</label>
+        <input type="number" id="inv-minimo" placeholder="0" min="0" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Proveedor (opcional)</label>
+      <input type="text" id="inv-proveedor" placeholder="Nombre del proveedor" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="cerrarModalInv()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarMaterial()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRODUCCION -->
+<div class="modal-overlay" id="modal-prod" style="display:none;" onclick="if(event.target===this)cerrarModalProd()">
+  <div class="modal">
+    <div class="modal-title">Nueva orden de producción</div>
+    <div class="form-row">
+      <label>Cliente</label>
+      <input type="text" id="prod-cliente" placeholder="Nombre del cliente" />
+    </div>
+    <div class="form-row">
+      <label>Producto</label>
+      <input type="text" id="prod-producto" placeholder="Ej: Etiquetas adhesivas A5" />
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Cantidad</label>
+        <input type="number" id="prod-cantidad" placeholder="500" min="1" />
+      </div>
+      <div class="form-row">
+        <label>Fecha de entrega</label>
+        <input type="text" id="prod-entrega" placeholder="DD/MM/YYYY" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Notas</label>
+      <textarea id="prod-notas" rows="2" placeholder="Instrucciones especiales, colores, etc."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="cerrarModalProd()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarOrden()">Crear orden</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const PASS = 'admin123'; // cambia esto por tu contraseña
+
+// ⚠️ IMPORTANTE: reemplaza con la URL de tu Apps Script desplegado
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIqU9PIMKIMGdmMmA0keHkDekEvcvMtj1kbuoSwbLUg67jmpljgJF-LpxgFVmtTn1sJw/exec';
+
+let consultas  = [];
+let inventario = [];
+let produccion = [];
+
+let filtroC    = 'todos';
+let filtroInv  = 'todos';
+let filtroProd = 'todos';
+let viewInv    = 'cards';
+let editInvId  = null;
+
+// ─── HELPERS SHEETS ──────────────────────────────────────────────────────────
+
+async function sheetGet(hoja) {
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?hoja=${hoja}`);
+    const json = await res.json();
+    return json.ok ? json.datos : [];
+  } catch (e) {
+    console.error('Error leyendo', hoja, e);
+    return [];
+  }
+}
+
+async function sheetPost(accion, hoja, datos) {
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ accion, hoja, datos }),
+    });
+    return await res.json();
+  } catch (e) {
+    console.error('Error en', accion, hoja, e);
+    return { ok: false };
+  }
+}
+
+function mostrarToast(msg, tipo = 'ok') {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `
+    position:fixed; bottom:24px; right:24px; z-index:9999;
+    padding:12px 20px; border-radius:8px; font-size:13px; font-weight:500;
+    background:${tipo === 'ok' ? '#EAF0E2' : '#FDEAEA'};
+    color:${tipo === 'ok' ? '#2D5016' : '#8C1F1F'};
+    border:1px solid ${tipo === 'ok' ? '#b5cfa0' : '#f0c0c0'};
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    transition: opacity 0.3s;
+  `;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+
+function tryLogin() {
+  const v = document.getElementById('pass-input').value;
+  if (v === PASS) {
+    sessionStorage.setItem('auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    cargarTodo();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('auth');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pass-input').value = '';
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── CARGA INICIAL DESDE SHEETS ───────────────────────────────────────────────
+
+async function cargarTodo() {
+  // Muestra loading en métricas
+  ['m-total','m-pend','m-atend','m-semana',
+   'inv-total','inv-critico','inv-bajo','inv-ok',
+   'p-total','p-proceso','p-listo','p-entregado'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '…';
+  });
+
+  const [rawC, rawI, rawP] = await Promise.all([
+    sheetGet('Formulario'),
+    sheetGet('Inventario'),
+    sheetGet('Produccion'),
+  ]);
+
+  // Normalizar consultas (campos del formulario del sitio)
+  consultas = rawC.map((r, i) => ({
+    id:       r.id       || i + 1,
+    fecha:    r.fecha    || '',
+    nombre:   r.nombre   || '',
+    empresa:  r.empresa  || '',
+    telefono: r.telefono || '',
+    correo:   r.correo   || '',
+    servicio: r.servicio || '',
+    mensaje:  r.mensaje  || '',
+    estado:   r.estado   || 'Pendiente',
+    notas:    r.notas    || '',
+  }));
+
+  // Normalizar inventario
+  inventario = rawI.map((r, i) => ({
+    id:        r.id        || i + 1,
+    nombre:    r.nombre    || '',
+    categoria: r.categoria || 'Otros',
+    stock:     parseFloat(r.stock)  || 0,
+    unidad:    r.unidad    || 'unidades',
+    minimo:    parseFloat(r.minimo) || 0,
+    proveedor: r.proveedor || '',
+  }));
+
+  // Normalizar producción
+  produccion = rawP.map((r, i) => ({
+    id:       r.id       || 'OP-' + String(i+1).padStart(3,'0'),
+    fecha:    r.fecha    || '',
+    cliente:  r.cliente  || '',
+    producto: r.producto || '',
+    cantidad: parseFloat(r.cantidad) || 0,
+    entrega:  r.entrega  || '—',
+    estado:   r.estado   || 'En proceso',
+    notas:    r.notas    || '',
+  }));
+
+  renderConsultas();
+  renderInventario();
+  renderProduccion();
+}
+
+// ─── CONSULTAS ────────────────────────────────────────────────────────────────
+
+function setFiltroC(f, btn) {
+  filtroC = f;
+  document.querySelectorAll('#page-consultas .filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderConsultas();
+}
+
+function renderConsultas() {
+  const q = document.getElementById('buscar-c').value.toLowerCase();
+  const data = consultas.filter(c => {
+    const mf = filtroC === 'todos' || c.estado === filtroC;
+    const mb = !q || c.nombre.toLowerCase().includes(q) || (c.empresa||'').toLowerCase().includes(q) || (c.servicio||'').toLowerCase().includes(q);
+    return mf && mb;
+  });
+
+  const tbody = document.getElementById('tbody-consultas');
+  const empty = document.getElementById('empty-c');
+
+  const hoy   = new Date();
+  const lunes  = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
+  document.getElementById('m-total').textContent = consultas.length;
+  document.getElementById('m-pend').textContent  = consultas.filter(c => c.estado === 'Pendiente').length;
+  document.getElementById('m-atend').textContent = consultas.filter(c => c.estado === 'Atendido').length;
+  document.getElementById('m-semana').textContent = consultas.filter(c => new Date(c.fecha) >= lunes).length;
+
+  if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map(c => `
+    <tr>
+      <td style="color:var(--text-3);font-family:'DM Mono',monospace;font-size:12px;">${c.id}</td>
+      <td style="color:var(--text-2);">${c.fecha}</td>
+      <td style="font-weight:500;">${c.nombre}<br><span style="font-size:11px;color:var(--text-3);">${c.empresa||''}</span></td>
+      <td>${c.servicio||c.producto||'—'}</td>
+      <td style="font-size:12px;color:var(--text-2);">${c.telefono||'—'}</td>
+      <td>
+        <select class="estado-select" onchange="cambiarEstadoC(${c.id}, this.value)">
+          <option ${c.estado==='Pendiente'?'selected':''}>Pendiente</option>
+          <option ${c.estado==='Atendido'?'selected':''}>Atendido</option>
+          <option ${c.estado==='Cerrado'?'selected':''}>Cerrado</option>
+        </select>
+      </td>
+      <td><input class="nota-input" value="${c.notas}" placeholder="Agregar nota…" onchange="guardarNotaC(${c.id}, this.value)" /></td>
+    </tr>
+  `).join('');
+}
+
+async function cambiarEstadoC(id, val) {
+  const c = consultas.find(x => x.id == id);
+  if (!c) return;
+  c.estado = val;
+  renderConsultas();
+  const r = await sheetPost('actualizar', 'Formulario', { id, estado: val });
+  mostrarToast(r.ok ? 'Estado actualizado' : 'Error al actualizar', r.ok ? 'ok' : 'err');
+}
+
+async function guardarNotaC(id, val) {
+  const c = consultas.find(x => x.id == id);
+  if (!c) return;
+  c.notas = val;
+  const r = await sheetPost('actualizar', 'Formulario', { id, notas: val });
+  mostrarToast(r.ok ? 'Nota guardada' : 'Error al guardar', r.ok ? 'ok' : 'err');
+}
+
+function exportarCSV() {
+  const h    = ['ID','Fecha','Nombre','Empresa','Telefono','Correo','Servicio','Mensaje','Estado','Notas'];
+  const rows = consultas.map(c => [c.id,c.fecha,c.nombre,c.empresa,c.telefono,c.correo,c.servicio,`"${c.mensaje}"`,c.estado,`"${c.notas}"`]);
+  const csv  = [h,...rows].map(r => r.join(',')).join('\n');
+  const a    = document.createElement('a');
+  a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'consultas_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// ─── INVENTARIO ───────────────────────────────────────────────────────────────
+
+function getStockStatus(item) {
+  const pct = item.minimo > 0 ? item.stock / item.minimo : 1;
+  if (item.stock === 0 || pct < 0.5) return 'critico';
+  if (pct < 1) return 'bajo';
+  return 'ok';
+}
+
+function setFiltroInv(f, btn) {
+  filtroInv = f;
+  document.querySelectorAll('#page-inventario .filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderInventario();
+}
+
+function setViewInv(v) {
+  viewInv = v;
+  document.getElementById('inv-cards-view').style.display = v === 'cards' ? 'grid' : 'none';
+  document.getElementById('inv-list-view').style.display  = v === 'list'  ? 'block' : 'none';
+  document.getElementById('btn-cards').classList.toggle('active', v === 'cards');
+  document.getElementById('btn-list').classList.toggle('active',  v === 'list');
+}
+
+function renderInventario() {
+  const q    = document.getElementById('buscar-inv').value.toLowerCase();
+  const data = inventario.filter(i => {
+    const mf = filtroInv === 'todos' || i.categoria === filtroInv;
+    const mb = !q || i.nombre.toLowerCase().includes(q) || i.categoria.toLowerCase().includes(q);
+    return mf && mb;
+  });
+
+  document.getElementById('inv-total').textContent   = inventario.length;
+  document.getElementById('inv-critico').textContent = inventario.filter(i => getStockStatus(i) === 'critico').length;
+  document.getElementById('inv-bajo').textContent    = inventario.filter(i => getStockStatus(i) === 'bajo').length;
+  document.getElementById('inv-ok').textContent      = inventario.filter(i => getStockStatus(i) === 'ok').length;
+
+  const cardsEl = document.getElementById('inv-cards-view');
+  cardsEl.innerHTML = data.map(i => {
+    const st    = getStockStatus(i);
+    const pct   = i.minimo > 0 ? Math.min(100, Math.round((i.stock / (i.minimo * 2)) * 100)) : 100;
+    const color = st === 'critico' ? 'var(--red)' : st === 'bajo' ? 'var(--amber)' : 'var(--accent)';
+    return `
+      <div class="inv-card stock-${st}">
+        <div class="inv-card-header">
+          <div>
+            <div class="inv-card-name">${i.nombre}</div>
+            <div class="inv-card-cat">${i.categoria} · ${i.proveedor||'—'}</div>
+          </div>
+          <span class="badge badge-${st === 'critico' ? 'critico' : st === 'bajo' ? 'bajo' : 'ok'}">${st === 'critico' ? 'Crítico' : st === 'bajo' ? 'Bajo' : 'OK'}</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="inv-card-stock">${i.stock.toLocaleString()}</div>
+          <div class="inv-card-unit">${i.unidad}</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color};"></div></div>
+        <div class="inv-card-footer">
+          <div class="inv-card-min">Mínimo: ${i.minimo} ${i.unidad}</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" onclick="ajustarStock(${i.id})">Ajustar</button>
+            <button class="btn btn-sm" onclick="editarMaterial(${i.id})">Editar</button>
+            <button class="btn btn-sm btn-danger" onclick="eliminarMaterial(${i.id})">✕</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const tbody = document.getElementById('tbody-inv');
+  const empty = document.getElementById('empty-inv');
+  if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; }
+  else {
+    empty.style.display = 'none';
+    tbody.innerHTML = data.map(i => {
+      const st = getStockStatus(i);
+      return `<tr>
+        <td style="font-weight:500;">${i.nombre}</td>
+        <td><span class="tag">${i.categoria}</span></td>
+        <td style="font-weight:500;">${i.stock.toLocaleString()}</td>
+        <td style="color:var(--text-2);">${i.unidad}</td>
+        <td style="color:var(--text-2);">${i.minimo}</td>
+        <td><span class="badge badge-${st === 'critico' ? 'critico' : st === 'bajo' ? 'bajo' : 'ok'}">${st === 'critico' ? 'Crítico' : st === 'bajo' ? 'Bajo' : 'OK'}</span></td>
+        <td>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" onclick="ajustarStock(${i.id})">Ajustar</button>
+            <button class="btn btn-sm" onclick="editarMaterial(${i.id})">Editar</button>
+            <button class="btn btn-sm btn-danger" onclick="eliminarMaterial(${i.id})">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function abrirModalInv() {
+  editInvId = null;
+  document.getElementById('modal-inv-title').textContent = 'Agregar material';
+  ['inv-nombre','inv-stock','inv-minimo','inv-proveedor'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inv-cat').value   = 'Papeles';
+  document.getElementById('inv-unidad').value = 'kg';
+  document.getElementById('modal-inv').style.display = 'flex';
+}
+
+function editarMaterial(id) {
+  const item = inventario.find(i => i.id == id);
+  if (!item) return;
+  editInvId = id;
+  document.getElementById('modal-inv-title').textContent = 'Editar material';
+  document.getElementById('inv-nombre').value    = item.nombre;
+  document.getElementById('inv-cat').value       = item.categoria;
+  document.getElementById('inv-unidad').value    = item.unidad;
+  document.getElementById('inv-stock').value     = item.stock;
+  document.getElementById('inv-minimo').value    = item.minimo;
+  document.getElementById('inv-proveedor').value = item.proveedor || '';
+  document.getElementById('modal-inv').style.display = 'flex';
+}
+
+function cerrarModalInv() { document.getElementById('modal-inv').style.display = 'none'; }
+
+async function guardarMaterial() {
+  const nombre = document.getElementById('inv-nombre').value.trim();
+  const stock  = parseFloat(document.getElementById('inv-stock').value)  || 0;
+  const minimo = parseFloat(document.getElementById('inv-minimo').value) || 0;
+  if (!nombre) { alert('Ingresa el nombre del material'); return; }
+
+  const datos = {
+    nombre,
+    categoria: document.getElementById('inv-cat').value,
+    unidad:    document.getElementById('inv-unidad').value,
+    stock, minimo,
+    proveedor: document.getElementById('inv-proveedor').value.trim(),
+  };
+
+  if (editInvId) {
+    // Editar existente
+    datos.id = editInvId;
+    const idx = inventario.findIndex(i => i.id == editInvId);
+    inventario[idx] = { ...inventario[idx], ...datos };
+    cerrarModalInv();
+    renderInventario();
+    const r = await sheetPost('actualizar', 'Inventario', datos);
+    mostrarToast(r.ok ? 'Material actualizado' : 'Error al actualizar', r.ok ? 'ok' : 'err');
+  } else {
+    // Nuevo material — genera ID local temporal y lo crea en Sheets
+    const newId = inventario.length > 0 ? Math.max(...inventario.map(i => Number(i.id) || 0)) + 1 : 1;
+    datos.id = newId;
+    inventario.push(datos);
+    cerrarModalInv();
+    renderInventario();
+    const r = await sheetPost('crear', 'Inventario', datos);
+    mostrarToast(r.ok ? 'Material guardado en Sheets ✓' : 'Error al guardar en Sheets', r.ok ? 'ok' : 'err');
+  }
+}
+
+async function ajustarStock(id) {
+  const item = inventario.find(i => i.id == id);
+  if (!item) return;
+  const val = prompt(`Stock actual de "${item.nombre}": ${item.stock} ${item.unidad}\n\nIngresa el nuevo stock:`);
+  if (val === null) return;
+  const n = parseFloat(val);
+  if (isNaN(n) || n < 0) { alert('Valor inválido'); return; }
+  item.stock = n;
+  renderInventario();
+  const r = await sheetPost('actualizar', 'Inventario', { id, stock: n });
+  mostrarToast(r.ok ? 'Stock actualizado en Sheets ✓' : 'Error al actualizar', r.ok ? 'ok' : 'err');
+}
+
+async function eliminarMaterial(id) {
+  const item = inventario.find(i => i.id == id);
+  if (!item) return;
+  if (!confirm(`¿Eliminar "${item.nombre}" del inventario?`)) return;
+  inventario = inventario.filter(i => i.id != id);
+  renderInventario();
+  const r = await sheetPost('eliminar', 'Inventario', { id });
+  mostrarToast(r.ok ? 'Material eliminado' : 'Error al eliminar', r.ok ? 'ok' : 'err');
+}
+
+// ─── PRODUCCION ───────────────────────────────────────────────────────────────
+
+function setFiltroProd(f, btn) {
+  filtroProd = f;
+  document.querySelectorAll('#page-produccion .filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProduccion();
+}
+
+function renderProduccion() {
+  const q    = document.getElementById('buscar-p').value.toLowerCase();
+  const data = produccion.filter(p => {
+    const mf = filtroProd === 'todos' || p.estado === filtroProd;
+    const mb = !q || p.cliente.toLowerCase().includes(q) || p.producto.toLowerCase().includes(q) || String(p.id).toLowerCase().includes(q);
+    return mf && mb;
+  });
+
+  document.getElementById('p-total').textContent     = produccion.length;
+  document.getElementById('p-proceso').textContent   = produccion.filter(p => p.estado === 'En proceso').length;
+  document.getElementById('p-listo').textContent     = produccion.filter(p => p.estado === 'Listo').length;
+  document.getElementById('p-entregado').textContent = produccion.filter(p => p.estado === 'Entregado').length;
+
+  const tbody = document.getElementById('tbody-prod');
+  const empty = document.getElementById('empty-p');
+
+  if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-2);">${p.id}</td>
+      <td style="color:var(--text-2);">${p.fecha}</td>
+      <td style="font-weight:500;">${p.cliente}</td>
+      <td>${p.producto}</td>
+      <td>${Number(p.cantidad).toLocaleString()}</td>
+      <td style="color:var(--text-2);">${p.entrega}</td>
+      <td>
+        <select class="estado-select" onchange="cambiarEstadoProd('${p.id}', this.value)">
+          <option ${p.estado==='En proceso'?'selected':''}>En proceso</option>
+          <option ${p.estado==='Listo'?'selected':''}>Listo</option>
+          <option ${p.estado==='Entregado'?'selected':''}>Entregado</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-danger" onclick="eliminarOrden('${p.id}')">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function abrirModalProd() {
+  ['prod-cliente','prod-producto','prod-cantidad','prod-entrega','prod-notas'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modal-prod').style.display = 'flex';
+}
+
+function cerrarModalProd() { document.getElementById('modal-prod').style.display = 'none'; }
+
+async function guardarOrden() {
+  const cliente  = document.getElementById('prod-cliente').value.trim();
+  const producto = document.getElementById('prod-producto').value.trim();
+  const cantidad = parseInt(document.getElementById('prod-cantidad').value) || 0;
+  if (!cliente || !producto) { alert('Completa cliente y producto'); return; }
+
+  const nums    = produccion.map(p => parseInt(String(p.id).replace('OP-','')) || 0);
+  const nextNum = (Math.max(0, ...nums) + 1).toString().padStart(3, '0');
+  const id      = 'OP-' + nextNum;
+
+  const datos = {
+    id,
+    fecha:    new Date().toLocaleDateString('es-PE'),
+    cliente, producto, cantidad,
+    entrega:  document.getElementById('prod-entrega').value || '—',
+    estado:   'En proceso',
+    notas:    document.getElementById('prod-notas').value,
+  };
+
+  produccion.push(datos);
+  cerrarModalProd();
+  renderProduccion();
+
+  const r = await sheetPost('crear', 'Produccion', datos);
+  mostrarToast(r.ok ? `Orden ${id} creada en Sheets ✓` : 'Error al crear orden', r.ok ? 'ok' : 'err');
+}
+
+async function cambiarEstadoProd(id, val) {
+  const p = produccion.find(x => x.id === id);
+  if (!p) return;
+  p.estado = val;
+  renderProduccion();
+  const r = await sheetPost('actualizar', 'Produccion', { id, estado: val });
+  mostrarToast(r.ok ? 'Estado actualizado' : 'Error al actualizar', r.ok ? 'ok' : 'err');
+}
+
+async function eliminarOrden(id) {
+  if (!confirm('¿Eliminar esta orden de producción?')) return;
+  produccion = produccion.filter(p => p.id !== id);
+  renderProduccion();
+  const r = await sheetPost('eliminar', 'Produccion', { id });
+  mostrarToast(r.ok ? 'Orden eliminada' : 'Error al eliminar', r.ok ? 'ok' : 'err');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+if (sessionStorage.getItem('auth')) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  cargarTodo();
+}
+</script>
+</body>
+</html>
